@@ -1,57 +1,80 @@
-"""
-# 🧠 News Summarization API
+# 📰 News Summarizer API
 
-This is a simple API-only backend using FastAPI and Hugging Face transformers that summarizes news articles either by:
-- Providing a block of text
-- Supplying a news article URL
+This is a Python-based API that accepts raw news articles and returns concise summaries using NLP techniques.
+
+---
 
 ## 🚀 Features
-- `/summarize-text`: Summarizes plain article text
-- `/summarize-url`: Scrapes and summarizes from a given URL
+
+- Accepts full news text via API
+- Returns concise summaries
+- Built with FastAPI / Flask (edit accordingly)
+- Uses NLP or ML model for summarization (e.g., BERT, T5)
+- Easy to deploy and integrate with frontends
+
+---
 
 ## 🛠 Tech Stack
-- FastAPI
-- Hugging Face Transformers
-- newspaper3k
 
-## 📦 How to Run
+- Python 3.x
+- FastAPI or Flask
+- HuggingFace Transformers / spaCy / NLTK
+- Uvicorn / Gunicorn (for running server)
+- Postman (for testing)
 
-1. Create a virtual environment and install dependencies:
+---
+
+## 📦 Setup Instructions
+
+### 1. Clone the Repository
+
 ```bash
+git clone https://github.com/Limahcode/News_summarizer.git
+cd News_summarizer
+
+
+2. Create and Activate Virtual Environment (optional but recommended)
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+# Windows
+venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
+
+
+3. Install Dependencies
 pip install -r requirements.txt
-```
 
-2. Run the app:
-```bash
+
+4. Run the API Server
 uvicorn app.main:app --reload
-```
+# or
+python main.py
 
-3. Visit Swagger UI to test:
-```
-http://127.0.0.1:8000/docs
-```
 
-## 📌 Example
-**POST** `/summarize-text`
-```json
+🧪 Example API Request
+POST /summarize
 {
-  "text": "Today, the president announced a new initiative to combat climate change..."
+  "text": "Full news article text goes here..."
 }
 
-Response:
+Response
 {
-  "summary": "The president launched a new climate initiative today..."
+  "summary": "This is a brief summary of the article."
 }
-```
 
-## 🌐 Deployment
-You can deploy this API using:
-- [Render](https://render.com/)
-- [Railway](https://railway.app/)
-- [Heroku (deprecated but still possible)]
+📂 Folder Structure
+news-summarizer-api/
+│
+├── main.py            # Main entry point
+├── summarizer.py              # Core logic
+├── requirements.txt
+├── .env
+└── .gitignore
 
-## 🙌 Author
-Built by LimahCode.
-"""
+🙌 Contributing
+Feel free to fork and make pull requests. Suggestions welcome!
+
+📄 License
+MIT License
+
+Let me know if you'd like to adjust this based on what stack or model you're using (e.g., if you're using HuggingFace T5, BERT, Flask instead of FastAPI, etc.)
