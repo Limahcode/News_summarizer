@@ -1,0 +1,303 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart AI Summarizer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: Arial;
+      <!-- max-width: 700px; -->
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .tab-buttons button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      border: none;
+      background-color: #eee;
+    }
+    .tab-buttons button.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    textarea, input[type="text"] {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 12px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    button.submit {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+    }
+    #summary {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #e8fff0;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+    #loading {
+      display: none;
+      font-style: italic;
+    }
+    .actions {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+ <div id="auth-links" style="text-align: center; margin-bottom: 20px;">
+  <a href="/static/signup.html" style="text-decoration: none; margin-right: 20px;">Sign Up</a>
+  <a href="/static/login.html" style="text-decoration: none;">Login</a>
+</div>
+
+<!-- Logout Button -->
+<div id="logout-section" style="text-align: center; display: none; margin-bottom: 20px;">
+  <button onclick="logout()">Logout</button>
+</div>
+
+  <h2>🧠 AI-Powered Summarizer</h2>
+
+  <div class="tab-buttons">
+    <button onclick="showTab('text')" id="textBtn" class="active">📝 Text</button>
+    <button onclick="showTab('url')" id="urlBtn">🌐 URL</button>
+  </div>
+
+  <div id="text-tab" class="tab-content active">
+    <textarea id="inputText" placeholder="Paste your text here..."></textarea>
+    <button class="submit" onclick="summarizeText()">Summarize Text</button>
+  </div>
+
+  <div id="url-tab" class="tab-content">
+    <textarea id="inputURL" placeholder="Paste a long article URL here..."></textarea>
+    <button class="submit" onclick="summarizeURL()">Summarize URL</button>
+  </div>
+
+  <div id="loading">⏳ Summarizing, please wait...</div>
+
+  <div id="summary"></div>
+
+  <div class="actions">
+    <button onclick="copySummary()">📋 Copy</button>
+    <button onclick="downloadSummary()">⬇️ Download</button>
+  </div>
+
+  <script>
+    function showTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(div => div.classList.remove('active'));
+      document.querySelectorAll('.tab-buttons button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(tab + '-tab').classList.add('active');
+      document.getElementById(tab + 'Btn').classList.add('active');
+      document.getElementById('summary').innerText = '';
+    }
+
+    async function summarizeText() {
+      const text = document.getElementById("inputText").value;
+      if (!text.trim()) return alert("Please enter text.");
+      document.getElementById("loading").style.display = "block";
+
+      const response = await fetch("http://127.0.0.1:8000/summarize-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text })
+      });
+
+      const data = await response.json();
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("summary").innerText = response.ok ? data.summary : "❌ Error: " + data.detail;
+    }
+
+    async function summarizeURL() {
+      const url = document.getElementById("inputURL").value;
+      if (!url.trim()) return alert("Please enter a URL.");
+      document.getElementById("loading").style.display = "block";
+
+      const response = await fetch("http://127.0.0.1:8000/summarize-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url })
+      });
+
+      const data = await response.json();
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("summary").innerText = response.ok ? data.summary : "❌ Error: " + data.detail;
+    }
+
+    function copySummary() {
+      const text = document.getElementById("summary").innerText;
+      navigator.clipboard.writeText(text).then(() => alert("Copied!"));
+    }
+
+    function downloadSummary() {
+      const text = document.getElementById("summary").innerText;
+      const blob = new Blob([text], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "summary.txt";
+      link.click();
+    }
+
+    const token = localStorage.getItem("token");
+
+  if (token) {
+    document.getElementById("auth-links").style.display = "none";
+    document.getElementById("logout-section").style.display = "block";
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/static/login.html";
+  }
+  </script>
+
+</body>
+</html> -->
+
+
+
+
+<login class="html"></login>
+
+static/login.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <h2>Login</h2>
+  <form id="login-form">
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button type="submit">Login</button>
+  </form>
+  <p id="login-message"></p>
+
+  <script>
+    const form = document.getElementById("login-form");
+  
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+  
+      try {
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+  
+        const data = await response.json();
+  
+        const messageEl = document.getElementById("login-message");
+  
+        if (response.ok) {
+          messageEl.style.color = "green";
+          messageEl.innerText = "✅ " + (data.message || "Login successful.");
+  
+          // ✅ Save token if returned by backend
+          if (data.token) {
+            localStorage.setItem("token", data.token);
+          }
+  
+          localStorage.setItem("username", username);
+          
+          // Redirect to main page
+          setTimeout(() => {
+            window.location.href = "/static/index.html";
+          }, 1500);
+  
+        } else {
+          messageEl.style.color = "red";
+          messageEl.innerText = "❌ " + (data.detail || "Login failed.");
+        }
+  
+      } catch (error) {
+        document.getElementById("login-message").innerText = "❌ Network error. Please try again.";
+      }
+    });
+  </script>
+  
+</body>
+</html>
+
+signup.,<html></html>
+
+<!-- static/signup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up</title>
+  <!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <h2>Sign Up</h2>
+  <form id="signup-form">
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button type="submit">Sign Up</button>
+  </form>
+  <p id="signup-message"></p>
+
+  <script>
+    const form = document.getElementById("signup-form");
+  
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+  
+      try {
+        const response = await fetch("/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          document.getElementById("signup-message").innerText = "✅ " + data.message;
+          // ✅ Redirect to login page after 2 seconds
+          setTimeout(() => {
+            window.location.href = "/static/login.html";
+          }, 2000);
+        } else {
+          document.getElementById("signup-message").innerText = "❌ " + (data.detail || "Sign-up failed.");
+        }
+      } catch (err) {
+        document.getElementById("signup-message").innerText = "❌ Network error. Please try again.";
+      }
+    });
+  </script>
+  
+</body>
+</html>

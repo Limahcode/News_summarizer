@@ -1,0 +1,7 @@
+# Created by https://www.gitignore.io/api/python,windows,macos,linux
+__pycache__/
+*.pyc
+venv/
+.env
+
+# https://github.com/Limahcode/News_summarizer

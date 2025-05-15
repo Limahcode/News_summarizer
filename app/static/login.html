@@ -1,0 +1,93 @@
+<!-- static/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-green-100 to-emerald-200 flex items-center justify-center h-screen">
+  <div class="bg-white shadow-2xl rounded-2xl px-8 py-10 w-full max-w-md transition-all">
+    <h2 class="text-3xl font-bold text-center text-green-700 mb-6">Welcome Back</h2>
+    
+    <form id="login-form" class="space-y-5">
+      <!-- <input type="text" id="username" placeholder="Username" required
+             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 transition" />
+       -->
+      <input type="text" id="identifier" placeholder="Username or Email" required
+      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 transition" />
+
+
+      <div class="relative">
+        <input type="password" id="password" placeholder="Password" required
+               class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 transition" />
+        
+        <span id="toggle-password" class="absolute inset-y-0 right-3 flex items-center text-gray-500 cursor-pointer">
+          👁️
+        </span>
+      </div>
+      <button type="submit"
+              class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 rounded-lg transition duration-200">
+        Login
+      </button>
+    </form>
+
+    <!-- Login Message -->
+    <p id="login-message" class="mt-4 text-center text-sm text-red-500 font-medium"></p>
+
+    <!-- Extra Links -->
+    <div class="mt-6 text-sm text-center text-gray-600 space-y-1">
+      <p><a href="#" class="hover:underline text-green-600">Forgot password?</a></p>
+      <p>Don't have an account? <a href="/static/signup.html" class="hover:underline text-green-600 font-semibold">Create one</a></p>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("login-form");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const identifier = document.getElementById("identifier").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    const response = await fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      localStorage.setItem("username", identifier);
+      document.getElementById("login-message").innerText = "✅ " + data.message;
+      setTimeout(() => {
+        window.location.href = "/static/index.html";
+      }, 1500);
+    } else {
+      const errorMessage = typeof data.detail === "string"
+        ? data.detail
+        : JSON.stringify(data.detail || data);
+
+      document.getElementById("login-message").innerText = "❌ " + errorMessage;
+    }
+  } catch (error) {
+    document.getElementById("login-message").innerText = "❌ Network error.";
+  }
+});
+
+  
+    // 👁️ Toggle password visibility
+    const togglePassword = document.getElementById("toggle-password");
+    const passwordInput = document.getElementById("password");
+  
+    togglePassword.addEventListener("click", () => {
+      const isPassword = passwordInput.type === "password";
+      passwordInput.type = isPassword ? "text" : "password";
+      togglePassword.textContent = isPassword ? "🙈" : "👁️";
+    });
+  </script>
+  
+</body>
+</html>

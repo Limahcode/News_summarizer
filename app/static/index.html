@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Smart AI Summarizer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-emerald-100 to-white font-sans">
+  <div class="max-w-3xl mx-auto px-6 py-10">
+    <!-- Navbar -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-green-700">🧠 Smart AI Summarizer</h1>
+      <div id="auth-links" class="space-x-4">
+        <a href="/static/signup.html" class="text-green-600 hover:underline">Sign Up</a>
+        <a href="/static/login.html" class="text-green-600 hover:underline">Login</a>
+      </div>
+      <div id="logout-section" class="hidden">
+        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Logout</button>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="flex gap-4 mb-6">
+      <button id="textBtn" onclick="showTab('text')" class="px-4 py-2 bg-green-200 hover:bg-green-500 hover:text-white rounded transition">📝 Text</button>
+      <button id="urlBtn" onclick="showTab('url')" class="px-4 py-2 bg-green-200 hover:bg-green-500 hover:text-white rounded transition">🌐 URL</button>
+    </div>
+
+    <!-- Text Tab -->
+    <div id="text-tab" class="tab-content">
+      <textarea id="inputText" rows="6" placeholder="Paste your text here..."
+                class="w-full p-4 border border-gray-300 rounded-lg resize-y focus:ring-2 focus:ring-green-400 transition"></textarea>
+      <button onclick="summarizeText()" class="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded transition">
+        Summarize Text
+      </button>
+    </div>
+
+    <!-- URL Tab -->
+    <div id="url-tab" class="tab-content hidden">
+      <textarea id="inputURL" rows="3" placeholder="Paste article URL here..."
+                class="w-full p-4 border border-gray-300 rounded-lg resize-y focus:ring-2 focus:ring-green-400 transition"></textarea>
+      <button onclick="summarizeURL()" class="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded transition">
+        Summarize URL
+      </button>
+    </div>
+
+    <!-- Loading Message -->
+    <div id="loading" class="mt-6 text-gray-500 italic hidden">⏳ Summarizing, please wait...</div>
+
+    <!-- Summary Output -->
+    <div id="summary" class="mt-6 bg-white border border-green-200 p-6 rounded-lg shadow-sm whitespace-pre-wrap"></div>
+
+    <!-- Action Buttons -->
+    <div class="mt-6 flex gap-4">
+      <button onclick="copySummary()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition">📋 Copy</button>
+      <button onclick="downloadSummary()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded transition">⬇️ Download</button>
+    </div>
+  </div>
+
+  <script>
+    function showTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(div => div.classList.add('hidden'));
+      document.getElementById(`${tab}-tab`).classList.remove('hidden');
+
+      document.getElementById("textBtn").classList.remove("bg-green-500", "text-white");
+      document.getElementById("urlBtn").classList.remove("bg-green-500", "text-white");
+      document.getElementById(`${tab}Btn`).classList.add("bg-green-500", "text-white");
+
+      document.getElementById("summary").innerText = "";
+    }
+
+    async function summarizeText() {
+      const text = document.getElementById("inputText").value;
+      if (!text.trim()) return alert("Please enter some text.");
+
+      document.getElementById("loading").classList.remove("hidden");
+      const res = await fetch("/summarize-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      const data = await res.json();
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("summary").innerText = res.ok ? data.summary : "❌ " + (data.detail || "An error occurred.");
+    }
+
+    async function summarizeURL() {
+      const url = document.getElementById("inputURL").value;
+      if (!url.trim()) return alert("Please enter a URL.");
+
+      document.getElementById("loading").classList.remove("hidden");
+      const res = await fetch("/summarize-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const data = await res.json();
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("summary").innerText = res.ok ? data.summary : "❌ " + (data.detail || "An error occurred.");
+    }
+
+    function copySummary() {
+      const text = document.getElementById("summary").innerText;
+      navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard!"));
+    }
+
+    function downloadSummary() {
+      const text = document.getElementById("summary").innerText;
+      const blob = new Blob([text], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "summary.txt";
+      a.click();
+    }
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      document.getElementById("auth-links").style.display = "none";
+      document.getElementById("logout-section").classList.remove("hidden");
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/static/login.html";
+    }
+  </script>
+</body>
+</html>
